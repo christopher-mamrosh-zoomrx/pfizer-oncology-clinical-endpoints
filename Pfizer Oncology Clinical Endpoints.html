@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pfizer Oncology Clinical Endpoints</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cGF0aCBkPSJNIDEyIDE4IEMgMjAgMTAsIDcwIDgsIDkwIDIwIEwgODggMzYgQyA2OCAyNiwgMTggMjgsIDEwIDM2IFoiIGZpbGw9IiM1QkI0RTUiLz4KICA8cGF0aCBkPSJNIDEwIDY0IEMgMTggNTIsIDY4IDUwLCA4OCA2MiBMIDkwIDc4IEMgNzIgOTAsIDIyIDkyLCAxMiA4MiBaIiBmaWxsPSIjMDAzMDg3Ii8+Cjwvc3ZnPg==" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f4f6f9;
+      color: #1a1a2e;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sticky-top {
+      flex-shrink: 0;
+      padding: 32px 24px 0 24px;
+      background: #f4f6f9;
+      z-index: 10;
+    }
+
+    .scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 24px 32px 24px;
+    }
+
+    header {
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-logo {
+      flex-shrink: 0;
+      height: 54px;
+      width: auto;
+      mix-blend-mode: multiply;
+    }
+
+    .header-text h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 4px;
+    }
+
+    .header-text p.subtitle {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .legend {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: #374151;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+    }
+
+    .dot-padcev    { background: #1e3a5f; }
+    .dot-ici       { background: #2d6a9f; }
+    .dot-targeted  { background: #3b7d8e; }
+    .dot-maint     { background: #4e9e8a; }
+
+    .table-wrap {
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      overflow-y: visible;
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+      font-size: 13px;
+      min-width: 1100px;
+    }
+
+    thead tr {
+      background: #1a1a2e;
+      color: #ffffff;
+    }
+
+    thead th {
+      background: #1a1a2e;
+      padding: 13px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #e5e7eb;
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover { background: #f0f4ff; }
+
+    tbody td {
+      padding: 13px 14px;
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    /* Drug name column */
+    td.drug-name {
+      font-weight: 700;
+      white-space: nowrap;
+      border-left: 4px solid transparent;
+    }
+
+    tr.row-padcev    td.drug-name { border-left-color: #1e3a5f; background: #f0f4ff; }
+    tr.row-padcev-mono td.drug-name { border-left-color: #1e3a5f; background: #f7f9ff; }
+    tr.row-ici       td.drug-name { border-left-color: #2d6a9f; }
+    tr.row-targeted  td.drug-name { border-left-color: #3b7d8e; }
+    tr.row-maint     td.drug-name { border-left-color: #4e9e8a; }
+
+    .drug-generic {
+      font-size: 11px;
+      font-weight: 400;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    .company-tag {
+      display: inline-block;
+      font-size: 10px;
+      background: #e5e7eb;
+      color: #374151;
+      border-radius: 3px;
+      padding: 1px 5px;
+      margin-top: 3px;
+      font-weight: 500;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: 4px;
+      padding: 2px 7px;
+      margin-right: 3px;
+      margin-bottom: 3px;
+      white-space: nowrap;
+    }
+
+    .badge-cat1    { background: #dcfce7; color: #166534; }
+    .badge-cat2    { background: #fef9c3; color: #854d0e; }
+    .badge-rec     { background: #dbeafe; color: #1e40af; }
+    .badge-std     { background: #ede9fe; color: #5b21b6; }
+    .badge-preferred { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+
+    .endpoint-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 6px;
+    }
+
+    .result-highlight {
+      font-weight: 600;
+      color: #1e3a5f;
+    }
+
+    .withdrawn {
+      color: #dc2626;
+      font-style: italic;
+      font-size: 12px;
+    }
+
+    .note-row td {
+      background: #fffbeb;
+      font-size: 12px;
+      color: #78350f;
+      padding: 10px 14px;
+      border-left: 4px solid #f59e0b;
+    }
+
+    footer {
+      margin-top: 28px;
+      font-size: 11px;
+      color: #9ca3af;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 14px;
+    }
+
+    footer a { color: #6b7280; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    footer ul { padding-left: 16px; line-height: 2; }
+
+    /* Drug filter pills */
+    .filter-section {
+      margin-bottom: 24px;
+    }
+
+    .filter-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 13px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1.5px solid #d1d5db;
+      background: #ffffff;
+      color: #6b7280;
+      transition: all 0.15s;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .pill:hover {
+      border-color: #93c5fd;
+      color: #1e3a5f;
+      background: #f0f4ff;
+    }
+
+    .pill.active {
+      background: #1e3a5f;
+      border-color: #1e3a5f;
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(30,58,95,0.25);
+    }
+
+    .pill.no-data {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    .pill.no-data:hover {
+      border-color: #d1d5db;
+      color: #6b7280;
+      background: #ffffff;
+    }
+
+    .no-data-msg {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 18px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    /* Inline table links */
+    td a { color: #1e3a5f; text-decoration: none; border-bottom: 1px dotted #93c5fd; }
+    td a:hover { color: #2d6a9f; border-bottom-style: solid; }
+  </style>
+</head>
+<body>
+
+<div class="sticky-top">
+<header>
+  <img class="header-logo" src="data:image/avif;base64,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" alt="Pfizer" />
+  <div class="header-text">
+    <h1 id="dashboard-title">Pfizer Oncology Clinical Endpoints</h1>
+    <p class="subtitle" id="dashboard-subtitle">Approved therapies for locally advanced / metastatic urothelial carcinoma (la/mUC) &amp; muscle-invasive bladder cancer (MIBC) &nbsp;|&nbsp; As of June 2026</p>
+  </div>
+</header>
+
+<div class="filter-section">
+  <div class="filter-label">Pfizer Oncology Portfolio</div>
+  <div class="filter-pills">
+    <span class="pill" onclick="selectPill(this, 'adcetris')">ADCETRIS</span>
+    <span class="pill" onclick="selectPill(this, 'balversa')">BALVERSA</span>
+    <span class="pill" onclick="selectPill(this, 'bavencio')">BAVENCIO</span>
+    <span class="pill" onclick="selectPill(this, 'elrexfio')">ELREXFIO</span>
+    <span class="pill" onclick="selectPill(this, 'ibrance')">IBRANCE</span>
+    <span class="pill" onclick="selectPill(this, 'lorbrena')">LORBRENA</span>
+    <span class="pill active" onclick="selectPill(this, 'padcev')">PADCEV</span>
+    <span class="pill" onclick="selectPill(this, 'talzenna')">TALZENNA</span>
+    <span class="pill" onclick="selectPill(this, 'tivdak')">TIVDAK</span>
+    <span class="pill" onclick="selectPill(this, 'tukysa')">TUKYSA</span>
+    <span class="pill" onclick="selectPill(this, 'xtandi')">XTANDI</span>
+  </div>
+  <div class="no-data-msg" id="no-data-msg">
+    No competitive landscape data available for this drug yet.
+  </div>
+</div>
+
+<div class="legend" id="legend-padcev">
+  <div class="legend-item"><div class="legend-dot dot-padcev"></div> PADCEV (Pfizer / Astellas)</div>
+  <div class="legend-item"><div class="legend-dot dot-ici"></div> Checkpoint inhibitor combinations</div>
+  <div class="legend-item"><div class="legend-dot dot-targeted"></div> Targeted therapy (FGFR)</div>
+  <div class="legend-item"><div class="legend-dot dot-maint"></div> Maintenance immunotherapy</div>
+</div>
+
+</div><!-- /sticky-top -->
+<div class="scroll-area">
+<div class="table-wrap" id="table-padcev">
+  <div class="table-scroll"><table>
+    <thead>
+      <tr>
+        <th style="width:160px">Drug</th>
+        <th style="width:130px">Setting / Indication</th>
+        <th style="width:90px">Mechanism</th>
+        <th style="width:110px">Pivotal Trial</th>
+        <th style="width:140px">Primary Endpoint(s)</th>
+        <th style="width:200px">Key Results</th>
+        <th style="width:180px">NCCN / Guideline Status</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- PADCEV combo -->
+      <tr class="row-padcev">
+        <td class="drug-name">
+          PADCEV + Keytruda
+          <div class="drug-generic">enfortumab vedotin + pembrolizumab</div>
+          <div class="company-tag">Pfizer / Astellas / Merck</div>
+        </td>
+        <td>1L la/mUC (all cisplatin eligibilities);<br>Neoadj/adj MIBC (cisplatin-ineligible)</td>
+        <td>Nectin-4 ADC + PD-1 inhibitor</td>
+        <td>
+          <a href="https://www.prnewswire.com/news-releases/groundbreaking-ev-302-trial-significantly-extends-overall-survival-and-progression-free-survival-in-patients-treated-with-padcev-enfortumab-vedotin-ejfv-and-keytruda-pembrolizumab-in-first-line-advanced-bladder-cancer-301963132.html" target="_blank">EV-302 (KEYNOTE-A39)</a>;<br>
+          <a href="https://www.appliedclinicaltrialsonline.com/view/ev-303-keynote-905-padcev-keytruda-improves-event-free-overall-survival-muscle-invasive-bladder-cancer" target="_blank">EV-303 (KEYNOTE-905)</a>
+        </td>
+        <td>
+          <span class="endpoint-label">1L la/mUC</span><br>
+          Dual primary: OS + PFS
+          <span class="endpoint-label">MIBC</span><br>
+          EFS + OS
+        </td>
+        <td>
+          <span class="result-highlight">mOS 31.5 vs 16.1 mo</span> (HR 0.51)<br>
+          mPFS 12.5 vs 6.3 mo<br>
+          49% reduction in risk of death vs chemo<br>
+          <span style="font-size:11px;color:#6b7280">EV-303: improved EFS + OS in MIBC</span>
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span>
+          <span class="badge badge-std">Standard of Care</span><br>
+          1L la/mUC across all cisplatin eligibilities;<br>
+          <a href="https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-pembrolizumab-enfortumab-vedotin-ejfv-muscle-invasive-bladder-cancer" target="_blank">MIBC approval Nov 2025</a>
+        </td>
+      </tr>
+
+      <!-- PADCEV mono -->
+      <tr class="row-padcev-mono">
+        <td class="drug-name">
+          PADCEV (monotherapy)
+          <div class="drug-generic">enfortumab vedotin</div>
+          <div class="company-tag">Pfizer / Astellas</div>
+        </td>
+        <td>2L+ la/mUC post platinum + PD-1/L1</td>
+        <td>Nectin-4 ADC</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2302985" target="_blank">EV-301</a></td>
+        <td>Primary: OS</td>
+        <td>
+          <span class="result-highlight">mOS 12.9 vs 8.9 mo</span> (HR 0.70)<br>
+          30% reduction in risk of death vs chemo
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Post platinum + ICI setting
+        </td>
+      </tr>
+
+      <!-- Keytruda mono -->
+      <tr class="row-ici">
+        <td class="drug-name">
+          Keytruda (monotherapy)
+          <div class="drug-generic">pembrolizumab</div>
+          <div class="company-tag">Merck</div>
+        </td>
+        <td>2L la/mUC post platinum;<br>1L cisplatin-ineligible (PD-L1+)</td>
+        <td>PD-1 inhibitor</td>
+        <td>
+          <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa1613683" target="_blank">KEYNOTE-045</a> (2L);<br>
+          <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa1702501" target="_blank">KEYNOTE-052</a> (1L)
+        </td>
+        <td>
+          <span class="endpoint-label">2L</span> Primary: OS<br>
+          <span class="endpoint-label">1L</span> Primary: ORR
+        </td>
+        <td>
+          <span class="result-highlight">mOS 10.3 vs 7.4 mo</span> vs chemo (2L, HR 0.70)<br>
+          ORR 29% in CPS ≥10 (1L)
+        </td>
+        <td>
+          <span class="badge badge-cat1">Category 1</span> (2L)<br>
+          Recommended 1L monotherapy for cisplatin-ineligible PD-L1+ patients;<br>largely displaced in 1L by EV+pembro
+        </td>
+      </tr>
+
+      <!-- Opdivo + GC -->
+      <tr class="row-ici">
+        <td class="drug-name">
+          Opdivo + gem/cis
+          <div class="drug-generic">nivolumab + gemcitabine/cisplatin</div>
+          <div class="company-tag">Bristol-Myers Squibb</div>
+        </td>
+        <td>1L unresectable / metastatic UC (cisplatin-eligible)</td>
+        <td>PD-1 inhibitor + platinum chemo</td>
+        <td><a href="https://www.annalsofoncology.org/article/S0923-7534(23)04271-0/fulltext" target="_blank">CheckMate 901</a></td>
+        <td>Dual primary: OS + PFS</td>
+        <td>
+          <span class="result-highlight">mOS 21.7 vs 18.9 mo</span> (HR 0.78, P=0.02)<br>
+          mPFS 7.9 vs 7.6 mo (HR 0.72)<br>
+          CR rate 22% vs 12%; median DoCR 37.1 vs 13.2 mo
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          1L combination for cisplatin-eligible patients;<br>main head-to-head competitor to EV+pembro in 1L
+        </td>
+      </tr>
+
+      <!-- Bavencio -->
+      <tr class="row-maint">
+        <td class="drug-name">
+          Bavencio (maintenance)
+          <div class="drug-generic">avelumab</div>
+          <div class="company-tag">Pfizer / EMD Serono</div>
+        </td>
+        <td>1L maintenance post platinum (non-progressive la/mUC)</td>
+        <td>PD-L1 inhibitor</td>
+        <td><a href="https://ascopubs.org/doi/10.1200/JCO.22.01792" target="_blank">JAVELIN Bladder 100</a></td>
+        <td>Primary: OS (all-comers + PD-L1+)</td>
+        <td>
+          <span class="result-highlight">mOS 23.8 vs 15.0 mo</span> (HR 0.76, P=0.004)<br>
+          mPFS 5.5 vs 2.1 mo (HR 0.54)
+        </td>
+        <td>
+          <span class="badge badge-cat1">Category 1</span>
+          <span class="badge badge-std">Standard of Care</span><br>
+          Only approved 1L maintenance indication in UC;<br>distinct niche from PADCEV 1L
+        </td>
+      </tr>
+
+      <!-- Balversa -->
+      <tr class="row-targeted">
+        <td class="drug-name">
+          Balversa
+          <div class="drug-generic">erdafitinib</div>
+          <div class="company-tag">Johnson &amp; Johnson</div>
+        </td>
+        <td>2L+ la/mUC with FGFR2/3 alterations, post platinum ± ICI</td>
+        <td>Pan-FGFR inhibitor (oral)</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2308849" target="_blank">THOR (Cohort 1)</a></td>
+        <td>Primary: OS</td>
+        <td>
+          <span class="result-highlight">mOS 12.1 vs 7.8 mo</span> (HR 0.64, P=0.005)<br>
+          mPFS 5.6 vs 2.7 mo vs chemo
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Biomarker-selected (FGFR2/3+) post-ICI setting;<br>competes with PADCEV monotherapy in 2L+
+        </td>
+      </tr>
+
+      <!-- Note row -->
+      <tr class="note-row">
+        <td colspan="7">
+          <strong>Note:</strong> Sacituzumab govitecan (Trodelvy; Gilead) had its urothelial carcinoma indication <strong>withdrawn by FDA on November 22, 2024</strong> after the confirmatory Phase 3 <a href="https://www.targetedonc.com/view/bladder-cancer-indication-of-sacituzumab-govitecan-withdrawn-in-us" target="_blank">TROPiCS-04 trial</a> failed to meet its primary endpoint of OS and showed excess early deaths from adverse events. It is no longer a marketed competitor in this space.
+        </td>
+      </tr>
+
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ELREXFIO COMPETITIVE TABLE
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="table-wrap" id="table-elrexfio" style="display:none;">
+  <div class="legend" id="legend-elrexfio">
+    <div class="legend-item"><div class="legend-dot dot-padcev"></div> Elrexfio (Pfizer) — BCMA Bispecific</div>
+    <div class="legend-item"><div class="legend-dot dot-ici"></div> Other BCMA-directed bispecifics</div>
+    <div class="legend-item"><div class="legend-dot dot-targeted"></div> GPRC5D bispecific</div>
+    <div class="legend-item"><div class="legend-dot dot-maint"></div> BCMA-targeted ADC</div>
+    <div class="legend-item" style="margin-left:4px"><div class="legend-dot" style="background:#7c3aed"></div> BCMA CAR-T</div>
+  </div>
+  <div class="table-scroll"><table>
+    <thead>
+      <tr>
+        <th style="width:175px">Drug</th>
+        <th style="width:130px">Setting / Indication</th>
+        <th style="width:90px">Mechanism</th>
+        <th style="width:110px">Pivotal Trial</th>
+        <th style="width:130px">Primary Endpoint(s)</th>
+        <th style="width:200px">Key Results</th>
+        <th style="width:180px">NCCN / Guideline Status</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- Elrexfio -->
+      <tr class="row-padcev">
+        <td class="drug-name">
+          Elrexfio
+          <div class="drug-generic">elranatamab-bcmm</div>
+          <div class="company-tag">Pfizer</div>
+        </td>
+        <td>R/R MM after ≥4 prior lines (PI + IMiD + anti-CD38)</td>
+        <td>BCMA × CD3 bispecific antibody</td>
+        <td><a href="https://www.nature.com/articles/s41591-023-02528-9" target="_blank">MagnetisMM-3</a></td>
+        <td>Primary: ORR (BICR)</td>
+        <td>
+          <span class="result-highlight">ORR 61%; CR or better 35%</span><br>
+          Median DOR not reached; 67% probability of maintaining response at 24 mo<br>
+          <span style="font-size:11px;color:#6b7280">Accel. approval Aug 2023; confirmatory MagnetisMM-5 ongoing</span>
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Included in NCCN MM guidelines for R/R ≥4L; off-the-shelf bispecific option
+        </td>
+      </tr>
+
+      <!-- Tecvayli -->
+      <tr class="row-ici">
+        <td class="drug-name">
+          Tecvayli
+          <div class="drug-generic">teclistamab-cqyv</div>
+          <div class="company-tag">Johnson &amp; Johnson</div>
+        </td>
+        <td>R/R MM after ≥4 prior lines (PI + IMiD + anti-CD38)</td>
+        <td>BCMA × CD3 bispecific antibody</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2203478" target="_blank">MajesTEC-1</a></td>
+        <td>Primary: ORR</td>
+        <td>
+          <span class="result-highlight">ORR 63%; CR or better 46%</span> (30.4 mo follow-up)<br>
+          Median DOR 24 mo; estimated 30-mo PFS and OS rates 61% and 74%
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          First approved BCMA bispecific (Oct 2022); direct class competitor to Elrexfio
+        </td>
+      </tr>
+
+      <!-- Lynozyfic -->
+      <tr class="row-ici">
+        <td class="drug-name">
+          Lynozyfic
+          <div class="drug-generic">linvoseltamab-gcpt</div>
+          <div class="company-tag">Regeneron</div>
+        </td>
+        <td>R/R MM after ≥4 prior lines (PI + IMiD + anti-CD38)</td>
+        <td>BCMA × CD3 bispecific antibody</td>
+        <td><a href="https://www.clinical-lymphoma-myeloma-leukemia.com/article/S2152-2650(25)04283-1/fulltext" target="_blank">LINKER-MM1</a></td>
+        <td>Primary: ORR</td>
+        <td>
+          <span class="result-highlight">ORR 70%; CR or better 45%</span><br>
+          Median DOR not reached; 9-mo DOR rate 89%<br>
+          <span style="font-size:11px;color:#6b7280">Accel. approval July 2025; highest ORR of 3 BCMA bispecifics</span>
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Newest approved BCMA bispecific; indirect comparisons suggest superior PFS vs teclistamab (mPFS NR vs 11.4 mo, HR 0.55)
+        </td>
+      </tr>
+
+      <!-- Talvey -->
+      <tr style="border-bottom:1px solid #e5e7eb;">
+        <td class="drug-name" style="border-left:4px solid #3b7d8e;">
+          Talvey
+          <div class="drug-generic">talquetamab-tgvs</div>
+          <div class="company-tag">Johnson &amp; Johnson</div>
+        </td>
+        <td>R/R MM after ≥4 prior lines (PI + IMiD + anti-CD38)</td>
+        <td>GPRC5D × CD3 bispecific antibody (non-BCMA)</td>
+        <td><a href="https://www.ncbi.nlm.nih.gov/books/NBK616620/" target="_blank">MonumenTAL-1</a></td>
+        <td>Primary: ORR</td>
+        <td>
+          <span class="result-highlight">ORR 73% (both dosing schedules)</span><br>
+          Median DOR 9.5 mo (weekly); NR (biweekly)<br>
+          <span style="font-size:11px;color:#6b7280">Accel. approval Aug 2023; only approved GPRC5D bispecific — alternative for BCMA-refractory patients</span>
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Distinct target (GPRC5D); active post-BCMA therapy; J&amp;J exploring talquetamab + teclistamab combo
+        </td>
+      </tr>
+
+      <!-- Blenrep -->
+      <tr style="border-bottom:1px solid #e5e7eb;">
+        <td class="drug-name" style="border-left:4px solid #4e9e8a;">
+          Blenrep + Vd
+          <div class="drug-generic">belantamab mafodotin + bortezomib/dex</div>
+          <div class="company-tag">GSK</div>
+        </td>
+        <td>R/R MM after ≥2 prior lines (PI + IMiD)</td>
+        <td>BCMA-targeted ADC</td>
+        <td><a href="https://www.thelancet.com/journals/lanonc/article/PIIS1470-2045(25)00330-4/abstract" target="_blank">DREAMM-7</a></td>
+        <td>Primary: PFS</td>
+        <td>
+          <span class="result-highlight">mPFS 36.6 vs 13.4 mo</span> vs dara+Vd (HR 0.41)<br>
+          OS: 42% reduction in risk of death vs dara+Vd<br>
+          <span style="font-size:11px;color:#6b7280">Full approval Oct 2025; earlier line than bispecifics (≥2L)</span>
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Re-approved Oct 2025 in combination; competes earlier in treatment sequence vs bispecifics; notable OS benefit vs daratumumab backbone
+        </td>
+      </tr>
+
+      <!-- Carvykti -->
+      <tr style="border-bottom:1px solid #e5e7eb;">
+        <td class="drug-name" style="border-left:4px solid #7c3aed;">
+          Carvykti
+          <div class="drug-generic">ciltacabtagene autoleucel</div>
+          <div class="company-tag">J&amp;J / Legend Biotech</div>
+        </td>
+        <td>R/R MM after ≥1 prior line (PI + IMiD + anti-CD38); ≥4L in heavily pretreated</td>
+        <td>BCMA-directed CAR-T cell therapy</td>
+        <td><a href="https://ascopubs.org/doi/10.1200/JCO.22.00842" target="_blank">CARTITUDE-1</a></td>
+        <td>Primary: ORR</td>
+        <td>
+          <span class="result-highlight">ORR 98%; CR or better 78%</span><br>
+          mPFS not reached at 2-yr follow-up; 56% lower risk of progression vs ide-cel (indirect)<br>
+          <span style="font-size:11px;color:#6b7280">One-time infusion; expanded to earlier lines Apr 2024</span>
+        </td>
+        <td>
+          <span class="badge badge-cat1">Category 1</span><br>
+          NCCN preferred CAR-T option; manufacturing wait time a key differentiator vs off-the-shelf bispecifics
+        </td>
+      </tr>
+
+      <!-- Abecma -->
+      <tr style="border-bottom:1px solid #e5e7eb;">
+        <td class="drug-name" style="border-left:4px solid #7c3aed;">
+          Abecma
+          <div class="drug-generic">idecabtagene vicleucel</div>
+          <div class="company-tag">BMS / 2seventy bio</div>
+        </td>
+        <td>R/R MM after ≥2 prior lines (PI + IMiD + anti-CD38)</td>
+        <td>BCMA-directed CAR-T cell therapy</td>
+        <td><a href="https://www.moffitt.org/for-healthcare-professionals/clinical-perspectives/clinical-perspectives-story-archive/fda-approves-carvykti-and-abecma-for-early-treatment-adult-patients-with-relapsed-or-refractory-multiple-myeloma/" target="_blank">KarMMa / KarMMa-3</a></td>
+        <td>Primary: ORR (KarMMa); PFS (KarMMa-3)</td>
+        <td>
+          <span class="result-highlight">ORR ~73%; CR or better ~33%</span> (KarMMa)<br>
+          KarMMa-3: mPFS 13.3 vs 4.4 mo vs standard regimens<br>
+          <span style="font-size:11px;color:#6b7280">First approved BCMA CAR-T (Mar 2021); expanded Apr 2024</span>
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Earlier approved vs Carvykti; indirect data suggest Carvykti has deeper/more durable responses
+        </td>
+      </tr>
+
+      <!-- Note row -->
+      <tr class="note-row">
+        <td colspan="7">
+          <strong>Competitive framing:</strong> Elrexfio competes primarily with Tecvayli and Lynozyfic as off-the-shelf BCMA bispecifics in the ≥4L setting. Lynozyfic shows the highest ORR (70%) of the three. Carvykti and Abecma (CAR-T) offer deeper/more durable responses but require manufacturing lead time. Talvey occupies a distinct GPRC5D niche, useful post-BCMA therapy. Blenrep competes earlier (≥2L) as a combination ADC with strong PFS and OS data vs daratumumab backbone.
+        </td>
+      </tr>
+
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     LORBRENA COMPETITIVE TABLE — ALK+ NSCLC
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="table-wrap" id="table-lorbrena" style="display:none;">
+  <div class="legend" id="legend-lorbrena">
+    <div class="legend-item"><div class="legend-dot dot-padcev"></div> Lorbrena (Pfizer) — 3rd-gen ALK TKI</div>
+    <div class="legend-item"><div class="legend-dot dot-ici"></div> 2nd-gen ALK TKIs (preferred)</div>
+    <div class="legend-item"><div class="legend-dot dot-targeted"></div> 1st-gen ALK TKI (historical)</div>
+  </div>
+  <div class="table-scroll"><table>
+    <thead>
+      <tr>
+        <th style="width:175px">Drug</th>
+        <th style="width:130px">Setting / Indication</th>
+        <th style="width:90px">Mechanism</th>
+        <th style="width:110px">Pivotal Trial</th>
+        <th style="width:130px">Primary Endpoint(s)</th>
+        <th style="width:200px">Key Results</th>
+        <th style="width:180px">NCCN / Guideline Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-padcev">
+        <td class="drug-name">Lorbrena<div class="drug-generic">lorlatinib</div><div class="company-tag">Pfizer</div></td>
+        <td>1L ALK+ metastatic NSCLC; 2L/3L post prior ALK TKI</td>
+        <td>3rd-gen ALK/ROS1 TKI (oral)</td>
+        <td><a href="https://ascopubs.org/doi/10.1200/JCO.24.00581" target="_blank">CROWN</a></td>
+        <td>Primary: PFS (BICR)</td>
+        <td>
+          <span class="result-highlight">7-yr PFS rate 55% vs 3%</span> (crizotinib); mPFS not reached vs 9.1 mo<br>
+          44% of patients still on lorlatinib at 7 yrs<br>
+          <span style="font-size:11px;color:#6b7280">Best CNS penetration of all ALK TKIs</span>
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          NCCN v4.2026: preferred 1L alongside alectinib, brigatinib, ensartinib; favored when CNS disease present
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">Alecensa<div class="drug-generic">alectinib</div><div class="company-tag">Roche / Genentech</div></td>
+        <td>1L ALK+ metastatic NSCLC; 2L post crizotinib</td>
+        <td>2nd-gen ALK TKI (oral)</td>
+        <td><a href="https://www.annalsofoncology.org/article/S0923-7534(25)04788-X/fulltext" target="_blank">ALEX</a></td>
+        <td>Primary: PFS (BICR)</td>
+        <td>
+          <span class="result-highlight">mPFS 34.8 vs 10.9 mo</span> vs crizotinib (HR 0.43)<br>
+          CNS progression: 12% vs 45% vs crizotinib<br>
+          Favorable OS; well-established safety profile
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          Most widely used 1L ALK TKI globally; longest track record among 2nd-gen agents
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">Alunbrig<div class="drug-generic">brigatinib</div><div class="company-tag">Takeda</div></td>
+        <td>1L ALK+ metastatic NSCLC; 2L post crizotinib</td>
+        <td>2nd-gen ALK/ROS1/EGFR TKI (oral)</td>
+        <td><a href="https://www.jto.org/article/S1556-0864(23)00730-X/fulltext" target="_blank">ALTA-1L</a></td>
+        <td>Primary: PFS (BICR)</td>
+        <td>
+          <span class="result-highlight">mPFS ~24 mo</span> vs crizotinib (HR 0.49)<br>
+          Strong intracranial activity; comparable efficacy to alectinib in indirect comparisons
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          NCCN preferred 1L; alternative to alectinib with slightly different toxicity profile
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">Ensacove<div class="drug-generic">ensartinib</div><div class="company-tag">Blueprint Medicines / Betta Pharma</div></td>
+        <td>1L ALK+ metastatic NSCLC (ALK TKI-naive)</td>
+        <td>2nd-gen ALK TKI (oral)</td>
+        <td><a href="https://www.cancernetwork.com/view/exploring-first-line-alk-inhibitors-tki-sequencing-in-alk-positive-nsclc" target="_blank">eXalt3</a></td>
+        <td>Primary: PFS (BICR)</td>
+        <td>
+          <span class="result-highlight">mPFS 25.8 vs 12.7 mo</span> vs crizotinib<br>
+          Strong systemic and intracranial activity<br>
+          <span style="font-size:11px;color:#6b7280">Newest preferred agent; FDA approved Dec 2024</span>
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          Added to NCCN preferred list v3.2025; newest entrant in preferred 1L class
+        </td>
+      </tr>
+      <tr class="row-targeted">
+        <td class="drug-name">Xalkori<div class="drug-generic">crizotinib</div><div class="company-tag">Pfizer</div></td>
+        <td>ALK+ / ROS1+ metastatic NSCLC (largely 2L+ now)</td>
+        <td>1st-gen ALK/MET/ROS1 TKI (oral)</td>
+        <td><a href="https://www.cancer.gov/news-events/cancer-currents-blog/2024/lorlatinib-alk-positive-lung-cancer-initial-treatment" target="_blank">PROFILE 1014</a></td>
+        <td>Primary: PFS</td>
+        <td>
+          <span class="result-highlight">mPFS ~10–11 mo</span> (historical 1L benchmark)<br>
+          Inferior to all 2nd/3rd-gen agents; 3% still on therapy in CROWN at 7 yrs
+        </td>
+        <td>
+          <span class="badge badge-cat2">Category 2B</span><br>
+          NCCN: useful in certain circumstances; largely superseded in 1L by newer agents
+        </td>
+      </tr>
+      <tr class="note-row">
+        <td colspan="7"><strong>Competitive framing:</strong> Lorbrena leads on raw PFS durability (7-yr rate 55%) and CNS control. Alectinib remains the most-used 1L agent globally due to track record and tolerability. Brigatinib and ensartinib are comparable alternatives. Lorbrena's main differentiation is depth of CNS penetration and post-2nd-gen utility; its neurocognitive/metabolic AE profile is the key debate point vs. alectinib.</td>
+      </tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     ADCETRIS COMPETITIVE TABLE — cHL / DLBCL
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="table-wrap" id="table-adcetris" style="display:none;">
+  <div class="legend" id="legend-adcetris">
+    <div class="legend-item"><div class="legend-dot dot-padcev"></div> Adcetris (Pfizer) — CD30 ADC</div>
+    <div class="legend-item"><div class="legend-dot dot-ici"></div> PD-1 checkpoint inhibitors</div>
+    <div class="legend-item"><div class="legend-dot dot-targeted"></div> CD19/CD79b ADCs</div>
+    <div class="legend-item" style="margin-left:4px"><div class="legend-dot" style="background:#7c3aed"></div> CAR-T</div>
+  </div>
+  <div class="table-scroll"><table>
+    <thead>
+      <tr>
+        <th style="width:175px">Drug</th>
+        <th style="width:130px">Setting / Indication</th>
+        <th style="width:90px">Mechanism</th>
+        <th style="width:110px">Pivotal Trial</th>
+        <th style="width:130px">Primary Endpoint(s)</th>
+        <th style="width:200px">Key Results</th>
+        <th style="width:180px">NCCN / Guideline Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-padcev">
+        <td class="drug-name">Adcetris + AVD<div class="drug-generic">brentuximab vedotin + chemo</div><div class="company-tag">Pfizer / Seagen</div></td>
+        <td>1L Stage III/IV cHL; post-ASCT consolidation; R/R cHL; R/R DLBCL (≥2L, transplant-ineligible)</td>
+        <td>CD30-directed ADC</td>
+        <td>
+          <a href="https://www.adcetrispro.com/previously-untreated-stage-III-IV-classical-hodgkin-lymphoma/efficacy" target="_blank">ECHELON-1</a> (1L cHL);<br>
+          <a href="https://ascopubs.org/doi/10.1200/JCO-24-02242" target="_blank">ECHELON-3</a> (R/R DLBCL)
+        </td>
+        <td>Primary: mPFS (ECHELON-1); OS (ECHELON-3)</td>
+        <td>
+          <span class="result-highlight">ECHELON-1: 41% reduction in risk of death</span> vs ABVD (6-yr follow-up); first regimen in 35 yrs to show OS benefit over ABVD<br>
+          <span class="result-highlight">ECHELON-3: mOS 13.8 vs 8.5 mo</span> (HR 0.63, 37% risk reduction) vs chemo in R/R DLBCL<br>
+          <span style="font-size:11px;color:#6b7280">DLBCL approval Feb 2025 (+ lenalidomide + rituximab)</span>
+        </td>
+        <td>
+          <span class="badge badge-cat1">Category 1</span><br>
+          NCCN: Category 1 preferred 1L Stage III/IV cHL; recommended post-ASCT consolidation; newly approved R/R DLBCL regimen for transplant-ineligible patients
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">Opdivo + AVD<div class="drug-generic">nivolumab + doxorubicin/vinblastine/dacarbazine</div><div class="company-tag">Bristol-Myers Squibb</div></td>
+        <td>1L Stage III/IV cHL (adult and pediatric ≥12 yrs)</td>
+        <td>PD-1 inhibitor + chemotherapy</td>
+        <td><a href="https://flasco.org/fda-approves-nivolumab-with-chemotherapy-for-previously-untreated-hodgkin-lymphoma/" target="_blank">CheckMate 812 / S1826</a></td>
+        <td>Primary: PFS</td>
+        <td>
+          <span class="result-highlight">52% reduction in risk of progression or death</span> vs brentuximab vedotin + AVD<br>
+          <span style="font-size:11px;color:#6b7280">FDA approved Mar 2026; directly beat A+AVD head-to-head</span>
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          Promoted to preferred status in NCCN 2026; direct 1L competitor to Adcetris + AVD; beat A+AVD in head-to-head trial
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">Keytruda<div class="drug-generic">pembrolizumab</div><div class="company-tag">Merck</div></td>
+        <td>R/R cHL after ≥3 prior lines or refractory (adult + pediatric)</td>
+        <td>PD-1 inhibitor</td>
+        <td><a href="https://www.merck.com/news/fda-approves-mercks-keytruda-pembrolizumab-for-adult-and-pediatric-patients-with-classical-hodgkin-lymphoma-chl-refractory-to-treatment-or-who-have-relapsed-after-three-or-more-prior-lines-of-therapy/" target="_blank">KEYNOTE-087</a></td>
+        <td>Primary: ORR</td>
+        <td>
+          <span class="result-highlight">ORR 69%; CR rate 22%</span><br>
+          Durable responses in heavily pretreated cHL
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          R/R cHL post-ASCT and BV; accel. approval; competes with nivolumab in R/R setting
+        </td>
+      </tr>
+      <tr class="row-targeted">
+        <td class="drug-name">Zynlonta + rituximab<div class="drug-generic">loncastuximab tesirine-lpyl</div><div class="company-tag">ADC Therapeutics</div></td>
+        <td>R/R large B-cell lymphoma (incl. DLBCL) after ≥2 prior lines</td>
+        <td>CD19-directed ADC</td>
+        <td><a href="https://ir.adctherapeutics.com/2026-06-03-ADC-Therapeutics-Announces-Results-From-LOTIS-5-Phase-3-Confirmatory-Clinical-Trial-of-ZYNLONTA-R-in-Combination-with-Rituximab-in-Relapsed-or-Refractory-Diffuse-Large-B-Cell-Lymphoma" target="_blank">LOTIS-5</a></td>
+        <td>Primary: PFS</td>
+        <td>
+          <span class="result-highlight">PFS endpoint met</span>; higher CR rate and longer DoCR vs control<br>
+          No detrimental effect on OS<br>
+          <span style="font-size:11px;color:#6b7280">Confirmatory Phase 3 data reported Jun 2026</span>
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          R/R DLBCL ≥2L; competes with Adcetris + lenalidomide + rituximab in transplant-ineligible DLBCL
+        </td>
+      </tr>
+      <tr style="border-bottom:1px solid #e5e7eb;">
+        <td class="drug-name" style="border-left:4px solid #7c3aed;">Axicabtagene / Lisocabtagene / Tisagenlecleucel<div class="drug-generic">axi-cel / liso-cel / tisa-cel</div><div class="company-tag">Kite/Gilead; BMS; Novartis</div></td>
+        <td>R/R large B-cell lymphoma after ≥2 prior lines (eligible patients)</td>
+        <td>CD19-directed CAR-T</td>
+        <td>ZUMA-1 / TRANSFORM / JULIET</td>
+        <td>Primary: ORR / EFS / OS</td>
+        <td>
+          <span class="result-highlight">ORR 73–83%; CR 54–58%</span> across pivotal trials<br>
+          Curative intent for eligible patients; manufacturing lag is key limitation
+        </td>
+        <td>
+          <span class="badge badge-cat1">Category 1</span><br>
+          NCCN preferred for transplant-eligible R/R DLBCL ≥2L; Adcetris + R2 fills the transplant-ineligible gap
+        </td>
+      </tr>
+      <tr class="note-row">
+        <td colspan="7"><strong>Competitive framing:</strong> In frontline Stage III/IV cHL, nivolumab + AVD (approved Mar 2026) now directly competes with — and beat — Adcetris + AVD head-to-head. In R/R DLBCL, Adcetris + len + rituximab (approved Feb 2025) fills the unmet need for transplant-ineligible patients where CAR-T is not an option.</td>
+      </tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TUKYSA COMPETITIVE TABLE — HER2+ Metastatic Breast Cancer
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="table-wrap" id="table-tukysa" style="display:none;">
+  <div class="legend" id="legend-tukysa">
+    <div class="legend-item"><div class="legend-dot dot-padcev"></div> Tukysa (Pfizer) — HER2 TKI</div>
+    <div class="legend-item"><div class="legend-dot dot-ici"></div> HER2-directed ADCs</div>
+    <div class="legend-item"><div class="legend-dot dot-targeted"></div> HER2 monoclonal antibodies</div>
+    <div class="legend-item"><div class="legend-dot dot-maint"></div> Other HER2 TKIs</div>
+  </div>
+  <div class="table-scroll"><table>
+    <thead>
+      <tr>
+        <th style="width:175px">Drug</th>
+        <th style="width:130px">Setting / Indication</th>
+        <th style="width:90px">Mechanism</th>
+        <th style="width:110px">Pivotal Trial</th>
+        <th style="width:130px">Primary Endpoint(s)</th>
+        <th style="width:200px">Key Results</th>
+        <th style="width:180px">NCCN / Guideline Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-padcev">
+        <td class="drug-name">Tukysa + T + cape<div class="drug-generic">tucatinib + trastuzumab + capecitabine</div><div class="company-tag">Pfizer</div></td>
+        <td>2L+ HER2+ metastatic BC (incl. brain mets); 1L maintenance (+ T + pertuzumab, HER2CLIMB-05)</td>
+        <td>HER2-selective TKI (oral)</td>
+        <td>
+          <a href="https://tukysa.pfizerpro.com/mbc/her2climb" target="_blank">HER2CLIMB</a> (2L+);<br>
+          <a href="https://www.pfizer.com/news/press-release/press-release-detail/tukysa-combination-significantly-improves-progression-free" target="_blank">HER2CLIMB-05</a> (1L maint.)
+        </td>
+        <td>Primary: PFS (both trials)</td>
+        <td>
+          <span class="result-highlight">HER2CLIMB: 46% reduction in risk of progression/death</span> vs T+cape; strong brain met activity<br>
+          <span class="result-highlight">HER2CLIMB-05: mPFS 24.9 vs 16.3 mo</span> (HR 0.64, 1L maintenance)<br>
+          <span style="font-size:11px;color:#6b7280">Only HER2 TKI with prospective brain met data at approval</span>
+        </td>
+        <td>
+          <span class="badge badge-cat1">Category 1</span><br>
+          NCCN preferred 2L+ for HER2+ MBC with/without brain mets; 1L maintenance data pending label update
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">Enhertu + pertuzumab<div class="drug-generic">fam-trastuzumab deruxtecan + pertuzumab</div><div class="company-tag">AstraZeneca / Daiichi Sankyo</div></td>
+        <td>1L HER2+ metastatic BC (first new 1L standard in a decade)</td>
+        <td>HER2-directed ADC + anti-HER2 mAb</td>
+        <td><a href="https://www.astrazeneca-us.com/media/press-releases/2025/ENHERTU-fam-trastuzumab-deruxtecan-nxki-plus-pertuzumab-approved-in-the-US-as-first-new-treatment-in-a-decade-for-the-1st-line-treatment-of-patients-with-HER2-positive-metastatic-breast-cancer.html" target="_blank">DESTINY-Breast09</a></td>
+        <td>Primary: PFS</td>
+        <td>
+          <span class="result-highlight">mPFS 40.7 vs 26.9 mo</span> vs THP (trastuzumab + pertuzumab + taxane)<br>
+          ORR 87% vs 81%<br>
+          <span style="font-size:11px;color:#6b7280">FDA approved Dec 2025; reshaping 1L standard of care</span>
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          New preferred 1L standard; displaces THP as frontline backbone; Tukysa competes in 1L maintenance layer on top
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">Enhertu (monotherapy)<div class="drug-generic">fam-trastuzumab deruxtecan</div><div class="company-tag">AstraZeneca / Daiichi Sankyo</div></td>
+        <td>2L HER2+ metastatic BC post trastuzumab-based therapy</td>
+        <td>HER2-directed ADC</td>
+        <td><a href="https://www.onclive.com/view/fda-approves-t-dxd-plus-pertuzumab-for-her2-breast-cancer" target="_blank">DESTINY-Breast03</a></td>
+        <td>Primary: PFS</td>
+        <td>
+          <span class="result-highlight">mPFS 28.8 vs 6.8 mo</span> vs T-DM1 (HR 0.33)<br>
+          OS benefit vs T-DM1; ORR 79% vs 35%<br>
+          Dominated 2L setting since 2021
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          NCCN preferred 2L post-trastuzumab; primary 2L competitor to Tukysa; Tukysa differentiates on brain met activity
+        </td>
+      </tr>
+      <tr class="row-targeted">
+        <td class="drug-name">Kadcyla<div class="drug-generic">ado-trastuzumab emtansine (T-DM1)</div><div class="company-tag">Roche / Genentech</div></td>
+        <td>2L HER2+ metastatic BC (largely displaced); adjuvant post-neoadjuvant residual disease</td>
+        <td>HER2-directed ADC (DM1)</td>
+        <td><a href="https://www.komen.org/breast-cancer/metastatic/metastatic/her2-targeted-therapies-for-metastatic-breast-cancer/" target="_blank">EMILIA / KATHERINE</a></td>
+        <td>Primary: PFS + OS (EMILIA); iDFS (KATHERINE)</td>
+        <td>
+          <span class="result-highlight">EMILIA: mPFS 9.6 vs 6.4 mo</span> vs lapatinib+cape; OS benefit<br>
+          KATHERINE: 50% reduction in invasive recurrence risk (adjuvant residual disease)<br>
+          <span style="font-size:11px;color:#6b7280">Largely displaced in metastatic setting by Enhertu</span>
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Still preferred in adjuvant residual disease post-neoadj; no longer preferred 2L MBC (superseded by Enhertu)
+        </td>
+      </tr>
+      <tr class="row-maint">
+        <td class="drug-name">Nerlynx<div class="drug-generic">neratinib</div><div class="company-tag">Pierre Fabre</div></td>
+        <td>Extended adjuvant HER2+ BC post trastuzumab; 3L+ MBC (+ capecitabine)</td>
+        <td>Pan-HER TKI (oral); irreversible</td>
+        <td><a href="https://www.facingourrisk.org/XRAY/fda-approval-tucatinib-metastatic-her2-positive-breast-cancer" target="_blank">ExteNET / NALA</a></td>
+        <td>Primary: iDFS (ExteNET); PFS (NALA)</td>
+        <td>
+          <span class="result-highlight">ExteNET: 5-yr iDFS benefit</span> in HR+ HER2+ adjuvant<br>
+          NALA: mPFS 8.8 vs 6.6 mo vs lapatinib+cape (3L+)
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Adjuvant extended setting; minimal role in MBC now; largely displaced by Tukysa in metastatic TKI niche
+        </td>
+      </tr>
+      <tr class="note-row">
+        <td colspan="7"><strong>Competitive framing:</strong> Enhertu (T-DXd) is the dominant HER2-directed agent in both 1L (+ pertuzumab, Dec 2025) and 2L MBC, based on transformative PFS data. Tukysa's key differentiator is prospective brain met activity and its unique role in 1L maintenance (HER2CLIMB-05). T-DM1 retains its adjuvant residual-disease niche. Neratinib has limited MBC relevance today.</td>
+      </tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     BALVERSA COMPETITIVE TABLE — FGFR+ Urothelial Carcinoma
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="table-wrap" id="table-balversa" style="display:none;">
+  <div class="legend" id="legend-balversa">
+    <div class="legend-item"><div class="legend-dot dot-padcev"></div> Balversa (J&amp;J / Pfizer partner) — FGFR inhibitor</div>
+    <div class="legend-item"><div class="legend-dot dot-ici"></div> ADC competitors</div>
+    <div class="legend-item"><div class="legend-dot dot-targeted"></div> Other FGFR inhibitors</div>
+    <div class="legend-item"><div class="legend-dot dot-maint"></div> Checkpoint inhibitors</div>
+  </div>
+  <div class="table-scroll"><table>
+    <thead>
+      <tr>
+        <th style="width:175px">Drug</th>
+        <th style="width:130px">Setting / Indication</th>
+        <th style="width:90px">Mechanism</th>
+        <th style="width:110px">Pivotal Trial</th>
+        <th style="width:130px">Primary Endpoint(s)</th>
+        <th style="width:200px">Key Results</th>
+        <th style="width:180px">NCCN / Guideline Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-padcev">
+        <td class="drug-name">Balversa<div class="drug-generic">erdafitinib</div><div class="company-tag">Johnson &amp; Johnson</div></td>
+        <td>2L+ la/mUC with FGFR2/3 alterations, post platinum ± ICI</td>
+        <td>Pan-FGFR inhibitor (oral)</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2308849" target="_blank">THOR (Cohort 1)</a></td>
+        <td>Primary: OS</td>
+        <td>
+          <span class="result-highlight">mOS 12.1 vs 7.8 mo</span> (HR 0.64, P=0.005)<br>
+          mPFS 5.6 vs 2.7 mo vs chemo<br>
+          <span style="font-size:11px;color:#6b7280">Only FGFR inhibitor with OS data in post-ICI UC</span>
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Biomarker-selected (FGFR2/3+); preferred option post-platinum + ICI in FGFR-altered UC
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">PADCEV (monotherapy)<div class="drug-generic">enfortumab vedotin</div><div class="company-tag">Pfizer / Astellas</div></td>
+        <td>2L+ la/mUC post platinum + PD-1/L1</td>
+        <td>Nectin-4 ADC</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2302985" target="_blank">EV-301</a></td>
+        <td>Primary: OS</td>
+        <td>
+          <span class="result-highlight">mOS 12.9 vs 8.9 mo</span> (HR 0.70)<br>
+          30% reduction in risk of death vs chemo; unselected population
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Competes in 2L+ regardless of FGFR status; Balversa restricted to FGFR2/3+ patients
+        </td>
+      </tr>
+      <tr class="row-targeted">
+        <td class="drug-name">Infigratinib<div class="drug-generic">infigratinib</div><div class="company-tag">QED Therapeutics</div></td>
+        <td>2L+ la/mUC with FGFR3 alterations post platinum</td>
+        <td>Selective FGFR1–3 inhibitor (oral)</td>
+        <td><a href="https://www.targetedonc.com/view/infigratinib-fda-approval-urothelial-carcinoma" target="_blank">CBGJ598X2204</a></td>
+        <td>Primary: ORR</td>
+        <td>
+          <span class="result-highlight">ORR 25%; DCR 84%</span><br>
+          Accelerated approval; no OS data; voluntary withdrawal under review<br>
+          <span style="font-size:11px;color:#6b7280">Market position limited; Balversa has superior OS data</span>
+        </td>
+        <td>
+          <span class="badge badge-cat2">Category 2B</span><br>
+          Limited uptake vs Balversa; lacks OS data; largely displaced in practice
+        </td>
+      </tr>
+      <tr class="row-maint">
+        <td class="drug-name">Keytruda (monotherapy)<div class="drug-generic">pembrolizumab</div><div class="company-tag">Merck</div></td>
+        <td>2L la/mUC post platinum (non-FGFR selected)</td>
+        <td>PD-1 inhibitor</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa1613683" target="_blank">KEYNOTE-045</a></td>
+        <td>Primary: OS</td>
+        <td>
+          <span class="result-highlight">mOS 10.3 vs 7.4 mo</span> (HR 0.70, 2L post-platinum)<br>
+          Unselected population; activity lower in FGFR-altered tumors
+        </td>
+        <td>
+          <span class="badge badge-cat1">Category 1</span><br>
+          Competitor in unselected 2L; Balversa preferred over pembro in FGFR2/3+ patients per THOR data
+        </td>
+      </tr>
+      <tr class="note-row">
+        <td colspan="7"><strong>Competitive framing:</strong> Balversa is the only FGFR inhibitor with Phase 3 OS data in post-ICI UC (THOR), establishing it as the preferred agent for FGFR2/3-altered tumors in 2L+. PADCEV monotherapy competes in the same line but is biomarker-unselected (Nectin-4). Infigratinib has limited differentiation vs Balversa. Pembrolizumab remains an option in unselected patients but is less favored in FGFR-altered disease.</td>
+      </tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     BAVENCIO COMPETITIVE TABLE — Urothelial Carcinoma Maintenance
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="table-wrap" id="table-bavencio" style="display:none;">
+  <div class="legend" id="legend-bavencio">
+    <div class="legend-item"><div class="legend-dot dot-padcev"></div> Bavencio (Pfizer / EMD Serono) — PD-L1 inhibitor</div>
+    <div class="legend-item"><div class="legend-dot dot-ici"></div> First-line combination regimens</div>
+    <div class="legend-item"><div class="legend-dot dot-targeted"></div> Other checkpoint inhibitors</div>
+  </div>
+  <div class="table-scroll"><table>
+    <thead>
+      <tr>
+        <th style="width:175px">Drug</th>
+        <th style="width:130px">Setting / Indication</th>
+        <th style="width:90px">Mechanism</th>
+        <th style="width:110px">Pivotal Trial</th>
+        <th style="width:130px">Primary Endpoint(s)</th>
+        <th style="width:200px">Key Results</th>
+        <th style="width:180px">NCCN / Guideline Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-padcev">
+        <td class="drug-name">Bavencio (maintenance)<div class="drug-generic">avelumab</div><div class="company-tag">Pfizer / EMD Serono</div></td>
+        <td>1L maintenance post platinum (non-progressive la/mUC)</td>
+        <td>PD-L1 inhibitor</td>
+        <td><a href="https://ascopubs.org/doi/10.1200/JCO.22.01792" target="_blank">JAVELIN Bladder 100</a></td>
+        <td>Primary: OS (all-comers + PD-L1+)</td>
+        <td>
+          <span class="result-highlight">mOS 23.8 vs 15.0 mo</span> (HR 0.76, P=0.004)<br>
+          mPFS 5.5 vs 2.1 mo (HR 0.54)<br>
+          <span style="font-size:11px;color:#6b7280">Only approved 1L maintenance indication in UC; benefit regardless of PD-L1 status</span>
+        </td>
+        <td>
+          <span class="badge badge-cat1">Category 1</span>
+          <span class="badge badge-std">Standard of Care</span><br>
+          Only approved maintenance therapy in 1L non-progressive la/mUC; distinct from EV+pembro 1L upfront
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">PADCEV + Keytruda<div class="drug-generic">enfortumab vedotin + pembrolizumab</div><div class="company-tag">Pfizer / Astellas / Merck</div></td>
+        <td>1L la/mUC (all cisplatin eligibilities); upfront therapy</td>
+        <td>Nectin-4 ADC + PD-1 inhibitor</td>
+        <td><a href="https://www.prnewswire.com/news-releases/groundbreaking-ev-302-trial-significantly-extends-overall-survival-and-progression-free-survival-in-patients-treated-with-padcev-enfortumab-vedotin-ejfv-and-keytruda-pembrolizumab-in-first-line-advanced-bladder-cancer-301963132.html" target="_blank">EV-302 (KEYNOTE-A39)</a></td>
+        <td>Dual primary: OS + PFS</td>
+        <td>
+          <span class="result-highlight">mOS 31.5 vs 16.1 mo</span> (HR 0.51)<br>
+          mPFS 12.5 vs 6.3 mo vs chemo<br>
+          <span style="font-size:11px;color:#6b7280">Replaces platinum chemo + Bavencio maintenance pathway for many patients</span>
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          Many patients now skip platinum + Bavencio maintenance by going straight to EV+pembro; key competitive dynamic
+        </td>
+      </tr>
+      <tr class="row-targeted">
+        <td class="drug-name">Opdivo + gem/cis<div class="drug-generic">nivolumab + gemcitabine/cisplatin</div><div class="company-tag">Bristol-Myers Squibb</div></td>
+        <td>1L unresectable / metastatic UC (cisplatin-eligible)</td>
+        <td>PD-1 inhibitor + platinum chemo</td>
+        <td><a href="https://www.annalsofoncology.org/article/S0923-7534(23)04271-0/fulltext" target="_blank">CheckMate 901</a></td>
+        <td>Dual primary: OS + PFS</td>
+        <td>
+          <span class="result-highlight">mOS 21.7 vs 18.9 mo</span> (HR 0.78, P=0.02)<br>
+          Alternative 1L chemoimmuno option for cisplatin-eligible; no maintenance indication
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Competes as 1L upfront chemoimmuno in cisplatin-eligible patients; no maintenance data/approval
+        </td>
+      </tr>
+      <tr class="note-row">
+        <td colspan="7"><strong>Competitive framing:</strong> Bavencio holds the only approved 1L maintenance indication in UC (JAVELIN Bladder 100), but its role is being eroded by EV+pembrolizumab, which displaces the platinum-then-maintain pathway for many eligible patients. In cisplatin-eligible patients, some still receive platinum + nivolumab or platinum → Bavencio maintenance; Bavencio's niche is narrowest in patients who respond to platinum and are then switched to maintenance rather than starting with EV+pembro.</td>
+      </tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- IBRANCE -->
+<div class="table-wrap" id="table-ibrance" style="display:none;">
+  <div class="legend" id="legend-ibrance">
+    <div class="legend-item"><div class="legend-dot dot-padcev"></div> Ibrance (Pfizer) — CDK4/6 inhibitor</div>
+    <div class="legend-item"><div class="legend-dot dot-ici"></div> Other CDK4/6 inhibitors</div>
+    <div class="legend-item"><div class="legend-dot dot-targeted"></div> PI3K/AKT pathway agents</div>
+    <div class="legend-item"><div class="legend-dot dot-maint"></div> Antibody-drug conjugates</div>
+  </div>
+  <div class="table-scroll"><table>
+    <thead>
+      <tr>
+        <th style="width:175px">Drug</th>
+        <th style="width:130px">Setting / Indication</th>
+        <th style="width:90px">Mechanism</th>
+        <th style="width:110px">Pivotal Trial</th>
+        <th style="width:130px">Primary Endpoint(s)</th>
+        <th style="width:200px">Key Results</th>
+        <th style="width:180px">NCCN / Guideline Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-padcev">
+        <td class="drug-name">Ibrance + letrozole / fulvestrant<div class="drug-generic">palbociclib</div><div class="company-tag">Pfizer</div></td>
+        <td>1L HR+ HER2- metastatic BC (+ AI); 2L+ post AI (+ fulvestrant)</td>
+        <td>CDK4/6 inhibitor (oral)</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa1607303" target="_blank">PALOMA-2</a> (1L); <a href="https://ascopubs.org/doi/10.1200/JCO.19.01478" target="_blank">PALOMA-3</a> (2L+)</td>
+        <td>Primary: PFS (both)</td>
+        <td>
+          <span class="result-highlight">PALOMA-2: mPFS 27.6 vs 14.5 mo</span> vs letrozole (HR 0.56)<br>
+          PALOMA-3: mPFS 9.5 vs 4.6 mo vs fulvestrant (HR 0.46)<br>
+          <span style="font-size:11px;color:#6b7280">No OS benefit shown in either trial</span>
+        </td>
+        <td>
+          <span class="badge badge-cat1">Category 1</span><br>
+          NCCN preferred CDK4/6 inhibitor + AI in 1L and + fulvestrant in 2L; most-used CDK4/6i globally by Rx volume
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">Verzenio + AI / fulvestrant<div class="drug-generic">abemaciclib</div><div class="company-tag">Eli Lilly</div></td>
+        <td>1L/2L HR+ HER2- metastatic BC; adjuvant high-risk HR+ HER2- early BC</td>
+        <td>CDK4/6 inhibitor (oral, continuous dosing)</td>
+        <td><a href="https://ascopubs.org/doi/10.1200/JCO.21.02257" target="_blank">MONARCH 3</a>; <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2107900" target="_blank">monarchE</a></td>
+        <td>Primary: PFS (MONARCH 3); iDFS (monarchE)</td>
+        <td>
+          <span class="result-highlight">MONARCH 3: mPFS 28.2 vs 14.8 mo</span> (HR 0.54)<br>
+          <span class="result-highlight">monarchE OS benefit: HR 0.68</span> (4-yr follow-up)<br>
+          Only CDK4/6i to show OS benefit in adjuvant setting
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          Preferred in high-risk adjuvant HR+ HER2-; competes in metastatic 1L/2L
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">Kisqali + AI / fulvestrant<div class="drug-generic">ribociclib</div><div class="company-tag">Novartis</div></td>
+        <td>1L/2L HR+ HER2- metastatic BC (premenopausal and postmenopausal)</td>
+        <td>CDK4/6 inhibitor (oral)</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa1911149" target="_blank">MONALEESA-2 / -3 / -7</a></td>
+        <td>Primary: PFS (all three); OS (MONALEESA-7 / -3)</td>
+        <td>
+          <span class="result-highlight">MONALEESA-7: mOS 58.7 vs 48.0 mo</span> (HR 0.76)<br>
+          MONALEESA-3: mOS 53.7 vs 41.5 mo (HR 0.73)<br>
+          Only CDK4/6i with OS data in metastatic setting
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          NCCN preferred over Ibrance in metastatic setting based on OS data
+        </td>
+      </tr>
+      <tr class="row-targeted">
+        <td class="drug-name">Piqray + fulvestrant<div class="drug-generic">alpelisib</div><div class="company-tag">Novartis</div></td>
+        <td>2L+ HR+ HER2- PIK3CA-mutated metastatic BC post CDK4/6i + AI</td>
+        <td>PI3Kα inhibitor (oral)</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa1813904" target="_blank">SOLAR-1</a></td>
+        <td>Primary: PFS</td>
+        <td>
+          <span class="result-highlight">mPFS 11.0 vs 5.7 mo</span> (HR 0.65) in PIK3CA-mutated cohort
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Post-CDK4/6i with PIK3CA mutation; competes with capivasertib
+        </td>
+      </tr>
+      <tr class="row-maint">
+        <td class="drug-name">Enhertu (HER2-low)<div class="drug-generic">fam-trastuzumab deruxtecan</div><div class="company-tag">AstraZeneca / Daiichi Sankyo</div></td>
+        <td>2L+ HR+ HER2-low metastatic BC post CDK4/6i</td>
+        <td>HER2-directed ADC</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2203690" target="_blank">DESTINY-Breast04 / -06</a></td>
+        <td>Primary: PFS (DB04); OS (DB06)</td>
+        <td>
+          <span class="result-highlight">DB04: mPFS 9.9 vs 5.1 mo</span> (HR 0.50); OS benefit<br>
+          DB06: mPFS 13.2 vs 8.1 mo post CDK4/6i; OS benefit
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          Preferred in HER2-low 2L+ after CDK4/6i failure
+        </td>
+      </tr>
+      <tr class="note-row">
+        <td colspan="7"><strong>Competitive framing:</strong> Ibrance was the first CDK4/6i but lacks OS data in metastatic BC. Kisqali (OS benefit in 1L) and Verzenio (OS benefit in adjuvant) have data advantages. In post-CDK4/6i lines, Enhertu (HER2-low) and alpelisib/capivasertib (PIK3CA/AKT) compete. Ibrance's volume share is under pressure from guideline preferences for Kisqali in 1L mBC.</td>
+      </tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- TALZENNA -->
+<div class="table-wrap" id="table-talzenna" style="display:none;">
+  <div class="legend" id="legend-talzenna">
+    <div class="legend-item"><div class="legend-dot dot-padcev"></div> Talzenna (Pfizer) — PARP inhibitor</div>
+    <div class="legend-item"><div class="legend-dot dot-ici"></div> Other PARP inhibitors</div>
+    <div class="legend-item"><div class="legend-dot dot-targeted"></div> ADC competitors in BRCA-mutated BC</div>
+  </div>
+  <div class="table-scroll"><table>
+    <thead>
+      <tr>
+        <th style="width:175px">Drug</th>
+        <th style="width:130px">Setting / Indication</th>
+        <th style="width:90px">Mechanism</th>
+        <th style="width:110px">Pivotal Trial</th>
+        <th style="width:130px">Primary Endpoint(s)</th>
+        <th style="width:200px">Key Results</th>
+        <th style="width:180px">NCCN / Guideline Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-padcev">
+        <td class="drug-name">Talzenna (± enzalutamide)<div class="drug-generic">talazoparib</div><div class="company-tag">Pfizer</div></td>
+        <td>Germline BRCA+ HER2- la/mBC; HRR-mutated mCRPC (+ enzalutamide)</td>
+        <td>PARP inhibitor (oral)</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa1810526" target="_blank">EMBRACA</a> (BC); <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2209683" target="_blank">TALAPRO-2</a> (mCRPC)</td>
+        <td>Primary: PFS (EMBRACA); rPFS (TALAPRO-2)</td>
+        <td>
+          <span class="result-highlight">EMBRACA: mPFS 8.6 vs 5.6 mo</span> vs chemo (HR 0.54)<br>
+          <span class="result-highlight">TALAPRO-2: 37% reduction in risk of progression</span> in HRR-mutated mCRPC
+        </td>
+        <td>
+          <span class="badge badge-cat1">Category 1</span><br>
+          NCCN preferred PARP inhibitor for gBRCA+ HER2- MBC; also approved mCRPC + enzalutamide
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">Lynparza<div class="drug-generic">olaparib</div><div class="company-tag">AstraZeneca / Merck</div></td>
+        <td>Germline BRCA+ HER2- metastatic BC; HRR-mutated mCRPC (+ abiraterone)</td>
+        <td>PARP inhibitor (oral)</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa1706450" target="_blank">OlympiAD</a> (BC); <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2200922" target="_blank">PROpel</a> (mCRPC)</td>
+        <td>Primary: PFS (OlympiAD); rPFS (PROpel)</td>
+        <td>
+          <span class="result-highlight">OlympiAD: mPFS 7.0 vs 4.2 mo</span> (HR 0.58)<br>
+          PROpel: mPFS 24.8 vs 16.6 mo (+ abiraterone) in HRR-unselected mCRPC
+        </td>
+        <td>
+          <span class="badge badge-cat1">Category 1</span><br>
+          Broadest PARP inhibitor label across tumor types; preferred in mCRPC + abiraterone
+        </td>
+      </tr>
+      <tr class="row-targeted">
+        <td class="drug-name">Sacituzumab govitecan<div class="drug-generic">sacituzumab govitecan-hziy</div><div class="company-tag">Gilead</div></td>
+        <td>2L+ HR+ HER2- metastatic BC; TNBC (2L+)</td>
+        <td>TROP-2-directed ADC</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2105805" target="_blank">TROPiCS-02 / ASCENT</a></td>
+        <td>Primary: PFS (TROPiCS-02); OS (ASCENT)</td>
+        <td>
+          <span class="result-highlight">TROPiCS-02: mPFS 5.5 vs 4.0 mo</span> (HR 0.66)<br>
+          ASCENT: mOS 12.1 vs 6.7 mo vs chemo in TNBC
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Post-CDK4/6i HR+ MBC and TNBC; alternative sequencing after PARP inhibitors
+        </td>
+      </tr>
+      <tr class="note-row">
+        <td colspan="7"><strong>Competitive framing:</strong> Talzenna and Lynparza are the two key PARP inhibitors in gBRCA+ HER2- MBC. Talzenna shows a numerically higher ORR in cross-trial comparison. Lynparza has broader label depth (pan-tumor BRCA, mCRPC + abiraterone unselected HRR). In later lines, ADCs (sacituzumab, Enhertu) compete regardless of BRCA status.</td>
+      </tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- TIVDAK -->
+<div class="table-wrap" id="table-tivdak" style="display:none;">
+  <div class="legend" id="legend-tivdak">
+    <div class="legend-item"><div class="legend-dot dot-padcev"></div> Tivdak (Pfizer) — Tissue Factor ADC</div>
+    <div class="legend-item"><div class="legend-dot dot-ici"></div> Checkpoint inhibitors</div>
+    <div class="legend-item"><div class="legend-dot dot-targeted"></div> Bevacizumab combinations</div>
+  </div>
+  <div class="table-scroll"><table>
+    <thead>
+      <tr>
+        <th style="width:175px">Drug</th>
+        <th style="width:130px">Setting / Indication</th>
+        <th style="width:90px">Mechanism</th>
+        <th style="width:110px">Pivotal Trial</th>
+        <th style="width:130px">Primary Endpoint(s)</th>
+        <th style="width:200px">Key Results</th>
+        <th style="width:180px">NCCN / Guideline Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-padcev">
+        <td class="drug-name">Tivdak<div class="drug-generic">tisotumab vedotin-tftv</div><div class="company-tag">Pfizer / Genmab</div></td>
+        <td>2L recurrent or metastatic cervical cancer post chemo</td>
+        <td>Tissue Factor (TF)-directed ADC (MMAE payload)</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2305512" target="_blank">innovaTV 301</a></td>
+        <td>Primary: OS</td>
+        <td>
+          <span class="result-highlight">mOS 11.5 vs 9.5 mo</span> (HR 0.70, P=0.0038) vs chemo<br>
+          mPFS 4.2 vs 2.9 mo; ORR 17.8% vs 5.2%<br>
+          <span style="font-size:11px;color:#6b7280">Full approval Sep 2023; first and only ADC approved in cervical cancer</span>
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Recommended 2L option post platinum + bevacizumab ± ICI; only ADC in this space
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">Keytruda + chemo ± bev<div class="drug-generic">pembrolizumab</div><div class="company-tag">Merck</div></td>
+        <td>1L persistent, recurrent, or metastatic cervical cancer (PD-L1+, CPS ≥1)</td>
+        <td>PD-1 inhibitor + chemo ± bevacizumab</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2112435" target="_blank">KEYNOTE-826</a></td>
+        <td>Primary: PFS + OS</td>
+        <td>
+          <span class="result-highlight">mOS 28.6 vs 16.5 mo</span> (HR 0.60) in CPS ≥1<br>
+          mPFS 10.4 vs 8.2 mo (HR 0.62)
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          Standard of care 1L in PD-L1+ (CPS ≥1); Tivdak used in 2L after pembro-containing 1L
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">Opdivo + chemo ± bev<div class="drug-generic">nivolumab</div><div class="company-tag">Bristol-Myers Squibb</div></td>
+        <td>1L persistent, recurrent, or metastatic cervical cancer (regardless of PD-L1)</td>
+        <td>PD-1 inhibitor + chemo ± bevacizumab</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2406708" target="_blank">CheckMate 919</a></td>
+        <td>Primary: OS</td>
+        <td>
+          <span class="result-highlight">mOS 26.7 vs 19.9 mo</span> (HR 0.73) regardless of PD-L1<br>
+          <span style="font-size:11px;color:#6b7280">FDA approved Jan 2025; active in PD-L1 negative patients</span>
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          Added as preferred 1L in 2025; differentiated by PD-L1 unselected activity
+        </td>
+      </tr>
+      <tr class="note-row">
+        <td colspan="7"><strong>Competitive framing:</strong> Tivdak is the only approved ADC in cervical cancer and fills the 2L slot after pembro/nivo-containing 1L regimens. The 2L population is growing as more patients survive 1L ICI-based regimens. Topotecan/paclitaxel was the comparator in innovaTV 301 and is largely displaced by Tivdak where accessible.</td>
+      </tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- XTANDI -->
+<div class="table-wrap" id="table-xtandi" style="display:none;">
+  <div class="legend" id="legend-xtandi">
+    <div class="legend-item"><div class="legend-dot dot-padcev"></div> Xtandi (Pfizer / Astellas) — AR inhibitor</div>
+    <div class="legend-item"><div class="legend-dot dot-ici"></div> Other AR pathway inhibitors</div>
+    <div class="legend-item"><div class="legend-dot dot-targeted"></div> PARP inhibitors</div>
+    <div class="legend-item"><div class="legend-dot dot-maint"></div> Radioligand / PSMA-directed therapy</div>
+  </div>
+  <div class="table-scroll"><table>
+    <thead>
+      <tr>
+        <th style="width:175px">Drug</th>
+        <th style="width:130px">Setting / Indication</th>
+        <th style="width:90px">Mechanism</th>
+        <th style="width:110px">Pivotal Trial</th>
+        <th style="width:130px">Primary Endpoint(s)</th>
+        <th style="width:200px">Key Results</th>
+        <th style="width:180px">NCCN / Guideline Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-padcev">
+        <td class="drug-name">Xtandi<div class="drug-generic">enzalutamide</div><div class="company-tag">Pfizer / Astellas</div></td>
+        <td>mHSPC, nmCRPC, mCRPC (pre- and post-docetaxel)</td>
+        <td>AR inhibitor (oral)</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa1911364" target="_blank">ARCHES</a> / <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa1900732" target="_blank">ENZAMET</a> (mHSPC); <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2003892" target="_blank">PROSPER</a> (nmCRPC)</td>
+        <td>Primary: rPFS or OS across trials</td>
+        <td>
+          <span class="result-highlight">ARCHES: 39% reduction in risk of death</span> vs placebo + ADT (mHSPC)<br>
+          PROSPER: mMFS 36.6 vs 14.7 mo (nmCRPC, HR 0.29)<br>
+          <span style="font-size:11px;color:#6b7280">Broadest approved indications of any AR inhibitor</span>
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          NCCN preferred in mHSPC, nmCRPC, and mCRPC across lines; longest track record in class
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">Nubeqa<div class="drug-generic">darolutamide</div><div class="company-tag">Bayer</div></td>
+        <td>nmCRPC; mHSPC (+ ADT + docetaxel); mCRPC</td>
+        <td>AR inhibitor (oral)</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2207027" target="_blank">ARASENS</a> (mHSPC); <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa1904819" target="_blank">ARAMIS</a> (nmCRPC)</td>
+        <td>Primary: OS (ARASENS); MFS (ARAMIS)</td>
+        <td>
+          <span class="result-highlight">ARASENS: OS HR 0.68</span> in mHSPC (+ ADT + docetaxel)<br>
+          ARAMIS: mMFS 40.4 vs 18.4 mo (nmCRPC, HR 0.41)
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          Preferred in mHSPC triplet with ADT + docetaxel; favorable CNS safety profile
+        </td>
+      </tr>
+      <tr class="row-ici">
+        <td class="drug-name">Erleada<div class="drug-generic">apalutamide</div><div class="company-tag">Johnson &amp; Johnson</div></td>
+        <td>nmCRPC; mHSPC (+ ADT)</td>
+        <td>AR inhibitor (oral)</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa1817275" target="_blank">TITAN</a> (mHSPC); <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa1500963" target="_blank">SPARTAN</a> (nmCRPC)</td>
+        <td>Primary: OS (TITAN); MFS (SPARTAN)</td>
+        <td>
+          <span class="result-highlight">TITAN: OS HR 0.65</span> in mHSPC<br>
+          SPARTAN: mMFS 40.5 vs 16.2 mo (nmCRPC, HR 0.28)
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          NCCN preferred in mHSPC and nmCRPC; no mCRPC approval
+        </td>
+      </tr>
+      <tr class="row-targeted">
+        <td class="drug-name">Talzenna + enzalutamide<div class="drug-generic">talazoparib + enzalutamide</div><div class="company-tag">Pfizer</div></td>
+        <td>HRR gene-mutated mCRPC</td>
+        <td>PARP inhibitor + AR inhibitor combination</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2209683" target="_blank">TALAPRO-2</a></td>
+        <td>Primary: rPFS</td>
+        <td>
+          <span class="result-highlight">37% reduction in risk of progression/death</span> vs placebo + enzalutamide in HRR-mutated mCRPC
+        </td>
+        <td>
+          <span class="badge badge-rec">NCCN Recommended</span><br>
+          Pfizer combination; extends Xtandi's relevance into HRR-mutated mCRPC
+        </td>
+      </tr>
+      <tr class="row-maint">
+        <td class="drug-name">Pluvicto<div class="drug-generic">lutetium Lu 177 vipivotide tetraxetan</div><div class="company-tag">Novartis</div></td>
+        <td>PSMA+ mCRPC post AR pathway inhibitor + taxane</td>
+        <td>PSMA-targeted radioligand therapy</td>
+        <td><a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2107322" target="_blank">VISION</a></td>
+        <td>Primary: rPFS + OS</td>
+        <td>
+          <span class="result-highlight">mOS 15.3 vs 11.3 mo</span> (HR 0.62); mPFS 8.7 vs 3.4 mo<br>
+          <span style="font-size:11px;color:#6b7280">Major post-Xtandi competitor; requires PSMA PET imaging</span>
+        </td>
+        <td>
+          <span class="badge badge-preferred">Category 1 Preferred</span><br>
+          NCCN preferred in PSMA+ mCRPC post AR inhibitor + taxane
+        </td>
+      </tr>
+      <tr class="note-row">
+        <td colspan="7"><strong>Competitive framing:</strong> Xtandi has the broadest indication set of any AR inhibitor (mHSPC, nmCRPC, mCRPC pre/post-chemo). Nubeqa differentiates on CNS safety and triplet data; apalutamide lacks mCRPC approval. In later-line mCRPC, Pluvicto is the fastest-growing competitor post-AR inhibitor. Talzenna + enzalutamide extends Xtandi's relevance in HRR-mutated mCRPC.</td>
+      </tr>
+    </tbody>
+  </table></div>
+</div>
+
+<footer>
+  <strong>Sources</strong>
+  <ul id="footer-sources"></ul>
+</footer>
+
+<script>
+  const noDataMsg   = document.getElementById('no-data-msg');
+  const titleEl     = document.getElementById('dashboard-title');
+  const subtitleEl  = document.getElementById('dashboard-subtitle');
+  const footerSrcs  = document.getElementById('footer-sources');
+
+  const tables = {
+    padcev: {
+      table:    document.getElementById('table-padcev'),
+      legend:   document.getElementById('legend-padcev'),
+      title:    'PADCEV Competitive Landscape – Urothelial Carcinoma',
+      subtitle: 'Approved therapies for locally advanced / metastatic urothelial carcinoma (la/mUC) &amp; muscle-invasive bladder cancer (MIBC) &nbsp;|&nbsp; As of June 2026',
+      sources: [
+        ['EV-302 (KEYNOTE-A39) OS/PFS Results – PRNewswire', 'https://www.prnewswire.com/news-releases/groundbreaking-ev-302-trial-significantly-extends-overall-survival-and-progression-free-survival-in-patients-treated-with-padcev-enfortumab-vedotin-ejfv-and-keytruda-pembrolizumab-in-first-line-advanced-bladder-cancer-301963132.html'],
+        ['CheckMate 901 (nivolumab + gem/cis) – Annals of Oncology', 'https://www.annalsofoncology.org/article/S0923-7534(23)04271-0/fulltext'],
+        ['JAVELIN Bladder 100 (avelumab) – JCO', 'https://ascopubs.org/doi/10.1200/JCO.22.01792'],
+        ['THOR Trial (erdafitinib) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa2308849'],
+      ]
+    },
+    elrexfio: {
+      table:    document.getElementById('table-elrexfio'),
+      legend:   document.getElementById('legend-elrexfio'),
+      title:    'Elrexfio Competitive Landscape – Relapsed / Refractory Multiple Myeloma',
+      subtitle: 'Approved therapies for R/R multiple myeloma: BCMA bispecifics, CAR-T, ADC &amp; GPRC5D bispecific &nbsp;|&nbsp; As of June 2026',
+      sources: [
+        ['MagnetisMM-3 (elranatamab) – Nature Medicine', 'https://www.nature.com/articles/s41591-023-02528-9'],
+        ['MajesTEC-1 (teclistamab) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa2203478'],
+        ['LINKER-MM1 (linvoseltamab) – Clinical Lymphoma, Myeloma and Leukemia', 'https://www.clinical-lymphoma-myeloma-leukemia.com/article/S2152-2650(25)04283-1/fulltext'],
+        ['DREAMM-7 (belantamab mafodotin) – Lancet Oncology', 'https://www.thelancet.com/journals/lanonc/article/PIIS1470-2045(25)00330-4/abstract'],
+        ['CARTITUDE-1 (ciltacabtagene autoleucel) – JCO', 'https://ascopubs.org/doi/10.1200/JCO.22.00842'],
+      ]
+    },
+    lorbrena: {
+      table:    document.getElementById('table-lorbrena'),
+      legend:   document.getElementById('legend-lorbrena'),
+      title:    'Lorbrena Competitive Landscape – ALK+ Non-Small Cell Lung Cancer',
+      subtitle: 'Approved ALK TKIs for metastatic ALK-positive NSCLC &nbsp;|&nbsp; As of June 2026',
+      sources: [
+        ['CROWN 7-yr (lorlatinib) – JCO', 'https://ascopubs.org/doi/10.1200/JCO.24.00581'],
+        ['ALEX final OS (alectinib) – Annals of Oncology', 'https://www.annalsofoncology.org/article/S0923-7534(25)04788-X/fulltext'],
+        ['eXalt3 / ensartinib FDA approval – CancerNetwork', 'https://www.cancernetwork.com/view/exploring-first-line-alk-inhibitors-tki-sequencing-in-alk-positive-nsclc'],
+      ]
+    },
+    adcetris: {
+      table:    document.getElementById('table-adcetris'),
+      legend:   document.getElementById('legend-adcetris'),
+      title:    'Adcetris Competitive Landscape – Classical Hodgkin Lymphoma &amp; DLBCL',
+      subtitle: 'Approved therapies for frontline cHL, relapsed/refractory cHL, and R/R DLBCL &nbsp;|&nbsp; As of June 2026',
+      sources: [
+        ['ECHELON-1 (brentuximab vedotin 1L cHL) – Adcetris HCP Site', 'https://www.adcetrispro.com/previously-untreated-stage-III-IV-classical-hodgkin-lymphoma/efficacy'],
+        ['ECHELON-3 (brentuximab vedotin R/R DLBCL) – JCO', 'https://ascopubs.org/doi/10.1200/JCO-24-02242'],
+        ['CheckMate 812 / S1826 nivolumab + AVD – FLASCO', 'https://flasco.org/fda-approves-nivolumab-with-chemotherapy-for-previously-untreated-hodgkin-lymphoma/'],
+      ]
+    },
+    tukysa: {
+      table:    document.getElementById('table-tukysa'),
+      legend:   document.getElementById('legend-tukysa'),
+      title:    'Tukysa Competitive Landscape – HER2+ Metastatic Breast Cancer',
+      subtitle: 'Approved HER2-directed therapies for metastatic breast cancer &nbsp;|&nbsp; As of June 2026',
+      sources: [
+        ['HER2CLIMB (tucatinib) – Tukysa HCP Site', 'https://tukysa.pfizerpro.com/mbc/her2climb'],
+        ['HER2CLIMB-05 (tucatinib 1L maintenance) – Pfizer', 'https://www.pfizer.com/news/press-release/press-release-detail/tukysa-combination-significantly-improves-progression-free'],
+        ['DESTINY-Breast09 (T-DXd + pertuzumab 1L) – AstraZeneca', 'https://www.astrazeneca-us.com/media/press-releases/2025/ENHERTU-fam-trastuzumab-deruxtecan-nxki-plus-pertuzumab-approved-in-the-US-as-first-new-treatment-in-a-decade-for-the-1st-line-treatment-of-patients-with-HER2-positive-metastatic-breast-cancer.html'],
+        ['DESTINY-Breast03 (T-DXd vs T-DM1 2L) – OncLive', 'https://www.onclive.com/view/fda-approves-t-dxd-plus-pertuzumab-for-her2-breast-cancer'],
+      ]
+    },
+    balversa: {
+      table:    document.getElementById('table-balversa'),
+      legend:   document.getElementById('legend-balversa'),
+      title:    'Balversa Competitive Landscape – FGFR-Altered Urothelial Carcinoma',
+      subtitle: 'Approved therapies for FGFR2/3-altered locally advanced / metastatic urothelial carcinoma &nbsp;|&nbsp; As of June 2026',
+      sources: [
+        ['THOR (erdafitinib) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa2308849'],
+        ['EV-301 (enfortumab vedotin) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa2302985'],
+        ['KEYNOTE-045 (pembrolizumab 2L UC) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa1613683'],
+      ]
+    },
+    bavencio: {
+      table:    document.getElementById('table-bavencio'),
+      legend:   document.getElementById('legend-bavencio'),
+      title:    'Bavencio Competitive Landscape – Urothelial Carcinoma Maintenance',
+      subtitle: 'First-line maintenance and systemic therapies for locally advanced / metastatic urothelial carcinoma &nbsp;|&nbsp; As of June 2026',
+      sources: [
+        ['JAVELIN Bladder 100 (avelumab maintenance) – JCO', 'https://ascopubs.org/doi/10.1200/JCO.22.01792'],
+        ['EV-302/KEYNOTE-A39 (EV + pembrolizumab) – PRNewswire', 'https://www.prnewswire.com/news-releases/groundbreaking-ev-302-trial-significantly-extends-overall-survival-and-progression-free-survival-in-patients-treated-with-padcev-enfortumab-vedotin-ejfv-and-keytruda-pembrolizumab-in-first-line-advanced-bladder-cancer-301963132.html'],
+        ['CheckMate 901 (nivolumab + gem/cis) – Annals of Oncology', 'https://www.annalsofoncology.org/article/S0923-7534(23)04271-0/fulltext'],
+      ]
+    },
+    ibrance: {
+      table:    document.getElementById('table-ibrance'),
+      legend:   document.getElementById('legend-ibrance'),
+      title:    'Ibrance Competitive Landscape – HR+ HER2- Metastatic Breast Cancer',
+      subtitle: 'CDK4/6 inhibitors and post-CDK4/6i agents in HR+ HER2- metastatic breast cancer &nbsp;|&nbsp; As of June 2026',
+      sources: [
+        ['PALOMA-2 (palbociclib 1L) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa1607303'],
+        ['PALOMA-3 (palbociclib 2L) – JCO', 'https://ascopubs.org/doi/10.1200/JCO.19.01478'],
+        ['MONARCH 3 / monarchE (abemaciclib) – JCO / NEJM', 'https://ascopubs.org/doi/10.1200/JCO.21.02257'],
+        ['MONALEESA-2/-3/-7 (ribociclib) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa1911149'],
+        ['SOLAR-1 (alpelisib) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa1813904'],
+        ['DESTINY-Breast04/-06 (T-DXd HER2-low) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa2203690'],
+      ]
+    },
+    talzenna: {
+      table:    document.getElementById('table-talzenna'),
+      legend:   document.getElementById('legend-talzenna'),
+      title:    'Talzenna Competitive Landscape – BRCA+ Breast Cancer &amp; HRR+ mCRPC',
+      subtitle: 'PARP inhibitors and competing agents in gBRCA+ HER2- MBC and HRR-mutated mCRPC &nbsp;|&nbsp; As of June 2026',
+      sources: [
+        ['EMBRACA (talazoparib vs chemo in gBRCA+ MBC) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa1810526'],
+        ['TALAPRO-2 (talazoparib + enzalutamide in mCRPC) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa2209683'],
+        ['OlympiAD (olaparib in gBRCA+ MBC) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa1706450'],
+        ['PROpel (olaparib + abiraterone in mCRPC) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa2200922'],
+      ]
+    },
+    tivdak: {
+      table:    document.getElementById('table-tivdak'),
+      legend:   document.getElementById('legend-tivdak'),
+      title:    'Tivdak Competitive Landscape – Recurrent / Metastatic Cervical Cancer',
+      subtitle: 'Approved therapies for recurrent or metastatic cervical cancer &nbsp;|&nbsp; As of June 2026',
+      sources: [
+        ['innovaTV 301 (tisotumab vedotin vs chemo) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa2305512'],
+        ['KEYNOTE-826 (pembrolizumab 1L cervical) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa2112435'],
+        ['CheckMate 919 (nivolumab 1L cervical) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa2406708'],
+        ['GOG-0240 (bevacizumab + chemo) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa1309748'],
+      ]
+    },
+    xtandi: {
+      table:    document.getElementById('table-xtandi'),
+      legend:   document.getElementById('legend-xtandi'),
+      title:    'Xtandi Competitive Landscape – mHSPC / nmCRPC / mCRPC',
+      subtitle: 'AR pathway inhibitors, PARP inhibitors, and PSMA-directed therapy in prostate cancer &nbsp;|&nbsp; As of June 2026',
+      sources: [
+        ['ARCHES / ENZAMET (enzalutamide mHSPC) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa1911364'],
+        ['PROSPER (enzalutamide nmCRPC) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa2003892'],
+        ['ARASENS (darolutamide mHSPC) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa2207027'],
+        ['TITAN (apalutamide mHSPC) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa1817275'],
+        ['TALAPRO-2 (talazoparib + enzalutamide mCRPC) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa2209683'],
+        ['VISION (lutetium-PSMA mCRPC) – NEJM', 'https://www.nejm.org/doi/full/10.1056/NEJMoa2107322'],
+      ]
+    }
+  };
+
+  function renderSources(drug) {
+    const srcs = tables[drug] ? tables[drug].sources : [];
+    footerSrcs.innerHTML = srcs.map(([label, url]) =>
+      `<li><a href="${url}" target="_blank">${label}</a></li>`
+    ).join('');
+  }
+
+  function selectPill(el, drug) {
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+
+    Object.values(tables).forEach(t => {
+      t.table.style.display = 'none';
+      if (t.legend) t.legend.style.display = 'none';
+    });
+    noDataMsg.style.display = 'none';
+
+    if (tables[drug]) {
+      tables[drug].table.style.display = '';
+      if (tables[drug].legend) tables[drug].legend.style.display = 'flex';
+      titleEl.textContent  = tables[drug].title;
+      subtitleEl.innerHTML = tables[drug].subtitle;
+      renderSources(drug);
+    } else {
+      noDataMsg.style.display = 'block';
+      noDataMsg.innerHTML = 'No competitive landscape data available for <strong>' + el.textContent + '</strong> yet.';
+      titleEl.textContent  = el.textContent + ' Competitive Landscape';
+      subtitleEl.innerHTML = 'No data available for this drug yet &nbsp;|&nbsp; As of June 2026';
+      footerSrcs.innerHTML = '';
+    }
+  }
+
+  renderSources('padcev');
+
+  // ── JS sticky table header ──────────────────────────────────────────────
+  // CSS position:sticky breaks when any ancestor has overflow-x:auto.
+  // Instead we clone each thead into a fixed overlay and sync it on scroll.
+
+  const scrollArea = document.querySelector('.scroll-area');
+  const stickyTop  = document.querySelector('.sticky-top');
+
+  // Build one floating header per table
+  const floatingHeaders = {};
+
+  document.querySelectorAll('.table-wrap').forEach(wrap => {
+    const id    = wrap.id; // e.g. "table-padcev"
+    const thead = wrap.querySelector('thead');
+    if (!thead) return;
+
+    const clone = thead.cloneNode(true);
+    const floatDiv = document.createElement('div');
+    floatDiv.style.cssText = [
+      'position:fixed',
+      'left:0',
+      'z-index:100',
+      'pointer-events:none',
+      'overflow:hidden',
+      'display:none',
+      'background:#1a1a2e',
+    ].join(';');
+
+    const floatTable = document.createElement('table');
+    floatTable.style.cssText = 'border-collapse:collapse;font-size:13px;table-layout:fixed;';
+    floatTable.appendChild(clone);
+    floatDiv.appendChild(floatTable);
+    document.body.appendChild(floatDiv);
+    floatingHeaders[id] = floatDiv;
+  });
+
+  function syncHeader() {
+    const topBarBottom = stickyTop.getBoundingClientRect().bottom;
+
+    document.querySelectorAll('.table-wrap').forEach(wrap => {
+      const fh = floatingHeaders[wrap.id];
+      if (!fh) return;
+
+      if (wrap.style.display === 'none') {
+        fh.style.display = 'none';
+        return;
+      }
+
+      const wrapRect   = wrap.getBoundingClientRect();
+      const thead      = wrap.querySelector('thead');
+      const theadRect  = thead.getBoundingClientRect();
+      const tableScroll = wrap.querySelector('.table-scroll');
+
+      // Show floating header only when real header has scrolled above topBar
+      if (theadRect.bottom <= topBarBottom && wrapRect.bottom > topBarBottom) {
+        // Match position & width to the table-scroll container
+        const tsRect = tableScroll.getBoundingClientRect();
+        fh.style.display  = 'block';
+        fh.style.top      = topBarBottom + 'px';
+        fh.style.left     = tsRect.left + 'px';
+        fh.style.width    = tsRect.width + 'px';
+
+        // Sync column widths from real thead
+        const realThs  = thead.querySelectorAll('th');
+        const cloneThs = fh.querySelectorAll('th');
+        realThs.forEach((th, i) => {
+          if (cloneThs[i]) {
+            cloneThs[i].style.width    = th.getBoundingClientRect().width + 'px';
+            cloneThs[i].style.minWidth = th.getBoundingClientRect().width + 'px';
+            cloneThs[i].style.padding  = '13px 14px';
+            cloneThs[i].style.textAlign = 'left';
+            cloneThs[i].style.fontWeight = '600';
+            cloneThs[i].style.fontSize = '12px';
+            cloneThs[i].style.letterSpacing = '0.04em';
+            cloneThs[i].style.textTransform = 'uppercase';
+            cloneThs[i].style.whiteSpace = 'nowrap';
+            cloneThs[i].style.color = '#ffffff';
+            cloneThs[i].style.background = '#1a1a2e';
+          }
+        });
+
+        // Sync horizontal scroll offset
+        fh.querySelector('table').style.transform =
+          'translateX(-' + tableScroll.scrollLeft + 'px)';
+      } else {
+        fh.style.display = 'none';
+      }
+    });
+  }
+
+  scrollArea.addEventListener('scroll', syncHeader);
+
+  // Also sync when horizontal scroll happens inside any table-scroll
+  document.querySelectorAll('.table-scroll').forEach(ts => {
+    ts.addEventListener('scroll', syncHeader);
+  });
+
+  window.addEventListener('resize', syncHeader);
+</script>
+</div><!-- /scroll-area -->
+</body>
+</html>
